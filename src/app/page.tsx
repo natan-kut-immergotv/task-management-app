@@ -17,20 +17,20 @@ export default function HomePage() {
   const [addTaskStatus, setAddTaskStatus] = useState<Task['status']>('todo')
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   
-  const { tasks, darkMode, toggleDarkMode } = useTaskStore()
+  const { tasks, darkMode } = useTaskStore()
 
-  // Apply dark mode to document
+  // Apply dark mode to document - force update
   useEffect(() => {
+    const htmlElement = document.documentElement
+    console.log('Applying dark mode:', darkMode)
+    
     if (darkMode) {
-      document.documentElement.classList.add('dark')
+      htmlElement.classList.add('dark')
+      console.log('Dark class added, classes:', htmlElement.className)
     } else {
-      document.documentElement.classList.remove('dark')
+      htmlElement.classList.remove('dark')
+      console.log('Dark class removed, classes:', htmlElement.className)
     }
-  }, [darkMode])
-
-  // Debug - log dark mode state
-  useEffect(() => {
-    console.log('Dark mode:', darkMode)
   }, [darkMode])
 
   // Group tasks by status
@@ -48,20 +48,34 @@ export default function HomePage() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     
-    // Only update if dropped over a valid column
-    if (active && over) {
-      const taskId = active.id as string
-      const newStatus = over.id as Task['status']
-      
-      // Verify the new status is valid
-      if (newStatus === 'todo' || newStatus === 'in-progress' || newStatus === 'done') {
-        // Update task status
-        useTaskStore.getState().moveTask(taskId, newStatus)
+    // Clear dragged task visual
+    setDraggedTask(null)
+    
+    // Only update if dropped over something
+    if (!over) return
+    
+    const taskId = active.id as string
+    const overId = over.id as string
+    
+    // Check if we dropped on a column (status) or on a task
+    const validStatuses = ['todo', 'in-progress', 'done']
+    let newStatus: Task['status'] | null = null
+    
+    if (validStatuses.includes(overId)) {
+      // Dropped directly on a column
+      newStatus = overId as Task['status']
+    } else {
+      // Dropped on a task - find which column that task is in
+      const targetTask = tasks.find(t => t.id === overId)
+      if (targetTask) {
+        newStatus = targetTask.status
       }
     }
     
-    // Always clear the dragged task (whether dropped successfully or not)
-    setDraggedTask(null)
+    // Update the task if we found a valid status
+    if (newStatus) {
+      useTaskStore.getState().moveTask(taskId, newStatus)
+    }
   }
 
   const handleTaskClick = (task: Task) => {
