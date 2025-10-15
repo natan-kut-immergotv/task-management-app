@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
-body {
+html, body {
   background: #ffffff;
   color: #171717;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
