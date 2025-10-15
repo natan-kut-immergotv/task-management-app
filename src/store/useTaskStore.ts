@@ -6,14 +6,12 @@ interface TaskState {
   tasks: Task[]
   users: User[]
   currentUser: User | null
-  darkMode: boolean
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void
   updateTask: (id: string, updates: Partial<Task>) => void
   deleteTask: (id: string) => void
   moveTask: (taskId: string, newStatus: Task['status']) => void
   addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void
   setCurrentUser: (user: User) => void
-  toggleDarkMode: () => void
 }
 
 const defaultUsers: User[] = [
@@ -135,7 +133,6 @@ export const useTaskStore = create<TaskState>()(
       tasks: defaultTasks,
       users: defaultUsers,
       currentUser: defaultUsers[0],
-      darkMode: false,
       
       addTask: (taskData) => {
         const newTask: Task = {
@@ -193,10 +190,6 @@ export const useTaskStore = create<TaskState>()(
       
       setCurrentUser: (user) => {
         set({ currentUser: user })
-      },
-      
-      toggleDarkMode: () => {
-        set((state) => ({ darkMode: !state.darkMode }))
       },
     }),
     {

@@ -12,9 +12,9 @@ interface TaskCardProps {
 }
 
 const priorityColors = {
-  low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  low: 'bg-green-100 text-green-800',
+  medium: 'bg-yellow-100 text-yellow-800',
+  high: 'bg-red-100 text-red-800',
 }
 
 const priorityLabels = {
@@ -40,24 +40,24 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className={`group relative rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800 ${
-        isOverdue ? 'border-red-300 dark:border-red-600' : 'border-neutral-200'
+      className={`group relative rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md ${
+        isOverdue ? 'border-red-300' : 'border-neutral-200'
       }`}
     >
       {/* Header */}
       <div className="mb-3 flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-medium text-neutral-900 dark:text-white">
+          <h3 className="font-medium text-neutral-900">
             {task.title}
           </h3>
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 text-sm text-neutral-600">
             {task.description}
           </p>
         </div>
         
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="ml-2 rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+          className="ml-2 rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-neutral-100"
         >
           <MoreVertical className="h-4 w-4 text-neutral-500" />
         </button>
@@ -65,20 +65,20 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
 
       {/* Dropdown Menu */}
       {showMenu && (
-        <div className="absolute right-2 top-10 z-10 rounded-lg border bg-white py-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="absolute right-2 top-10 z-10 rounded-lg border bg-white py-1 shadow-lg">
           <button
             onClick={() => {
               onEdit?.(task)
               setShowMenu(false)
             }}
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700"
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
           >
             <Edit className="h-4 w-4" />
             Edit
           </button>
           <button
             onClick={handleDelete}
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-neutral-100 dark:text-red-400 dark:hover:bg-neutral-700"
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
             Delete
@@ -92,7 +92,7 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
           {task.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1 text-xs text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400"
+              className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1 text-xs text-neutral-600"
             >
               <Tag className="h-3 w-3" />
               {tag}
@@ -111,7 +111,7 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
+      <div className="flex items-center justify-between text-xs text-neutral-500">
         <div className="flex items-center gap-3">
           {/* Assignee */}
           <div className="flex items-center gap-1">

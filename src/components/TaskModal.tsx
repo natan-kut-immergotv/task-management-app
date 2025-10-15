@@ -30,15 +30,15 @@ export default function TaskModal({ task, isOpen, onClose }: TaskModalProps) {
   }
 
   const priorityColors = {
-    low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    low: 'bg-green-100 text-green-800',
+    medium: 'bg-yellow-100 text-yellow-800',
+    high: 'bg-red-100 text-red-800',
   }
 
   const statusColors = {
-    todo: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    'in-progress': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    done: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    todo: 'bg-blue-100 text-blue-800',
+    'in-progress': 'bg-yellow-100 text-yellow-800',
+    done: 'bg-green-100 text-green-800',
   }
 
   if (!task) return null
@@ -61,13 +61,13 @@ export default function TaskModal({ task, isOpen, onClose }: TaskModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg bg-white shadow-xl dark:bg-neutral-800"
+            className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg bg-white shadow-xl"
           >
             {/* Header */}
-            <div className="border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
+            <div className="border-b border-neutral-200 px-6 py-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
+                  <h2 className="text-xl font-semibold text-neutral-900">
                     {task.title}
                   </h2>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -95,7 +95,7 @@ export default function TaskModal({ task, isOpen, onClose }: TaskModalProps) {
                 <h3 className="mb-2 font-medium text-neutral-900 dark:text-white">
                   Description
                 </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
+                <p className="text-neutral-600">
                   {task.description}
                 </p>
               </div>

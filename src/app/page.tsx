@@ -17,31 +17,7 @@ export default function HomePage() {
   const [addTaskStatus, setAddTaskStatus] = useState<Task['status']>('todo')
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   
-  const { tasks, darkMode } = useTaskStore()
-
-  // Apply dark mode to document
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [darkMode])
-
-  // Initialize dark mode from localStorage on mount
-  useEffect(() => {
-    const savedData = localStorage.getItem('task-management-storage')
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData)
-        if (parsed.state?.darkMode) {
-          document.documentElement.classList.add('dark')
-        }
-      } catch (e) {
-        // Ignore parsing errors
-      }
-    }
-  }, [])
+  const { tasks } = useTaskStore()
 
   // Group tasks by status
   const tasksByStatus = {
@@ -162,7 +138,7 @@ export default function HomePage() {
                 status={column.status}
                 title={column.title}
                 tasks={column.tasks}
-                onAddTask={() => handleAddTask(column.status)}
+                onAddTask={column.status === 'todo' ? () => handleAddTask(column.status) : undefined}
                 onEditTask={handleTaskClick}
               />
             ))}
