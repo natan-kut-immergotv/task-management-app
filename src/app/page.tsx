@@ -19,6 +19,25 @@ export default function HomePage() {
   
   const { tasks, darkMode } = useTaskStore()
 
+  // Initialize dark mode from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('task-management-storage')
+    if (savedTheme) {
+      try {
+        const parsed = JSON.parse(savedTheme)
+        if (parsed.state && typeof parsed.state.darkMode === 'boolean') {
+          if (parsed.state.darkMode) {
+            document.documentElement.classList.add('dark')
+          } else {
+            document.documentElement.classList.remove('dark')
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing theme:', e)
+      }
+    }
+  }, [])
+
   // Apply dark mode to document
   useEffect(() => {
     if (darkMode) {
@@ -43,14 +62,19 @@ export default function HomePage() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     
-    if (active && over && active.id !== over.id) {
+    // Only update if dropped over a valid column
+    if (active && over) {
       const taskId = active.id as string
       const newStatus = over.id as Task['status']
       
-      // Update task status
-      useTaskStore.getState().moveTask(taskId, newStatus)
+      // Verify the new status is valid
+      if (newStatus === 'todo' || newStatus === 'in-progress' || newStatus === 'done') {
+        // Update task status
+        useTaskStore.getState().moveTask(taskId, newStatus)
+      }
     }
     
+    // Always clear the dragged task (whether dropped successfully or not)
     setDraggedTask(null)
   }
 
