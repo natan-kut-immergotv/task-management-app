@@ -19,19 +19,29 @@ export default function HomePage() {
   
   const { tasks, darkMode } = useTaskStore()
 
-  // Apply dark mode to document - force update
+  // Apply dark mode to document
   useEffect(() => {
-    const htmlElement = document.documentElement
-    console.log('Applying dark mode:', darkMode)
-    
     if (darkMode) {
-      htmlElement.classList.add('dark')
-      console.log('Dark class added, classes:', htmlElement.className)
+      document.documentElement.classList.add('dark')
     } else {
-      htmlElement.classList.remove('dark')
-      console.log('Dark class removed, classes:', htmlElement.className)
+      document.documentElement.classList.remove('dark')
     }
   }, [darkMode])
+
+  // Initialize dark mode from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('task-management-storage')
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData)
+        if (parsed.state?.darkMode) {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+    }
+  }, [])
 
   // Group tasks by status
   const tasksByStatus = {
