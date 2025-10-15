@@ -17,7 +17,7 @@ export default function HomePage() {
   const [addTaskStatus, setAddTaskStatus] = useState<Task['status']>('todo')
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   
-  const { tasks, darkMode, toggleDarkMode } = useTaskStore()
+  const { tasks, darkMode } = useTaskStore()
 
   // Apply dark mode to document
   useEffect(() => {

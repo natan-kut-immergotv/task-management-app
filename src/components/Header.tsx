@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Sun, Moon, Plus, Bell, User, Settings, LogOut } from 'lucide-react'
 import { useTaskStore } from '../store/useTaskStore'
@@ -78,11 +79,15 @@ export default function Header({ onAddTask }: HeaderProps) {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 rounded-lg p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700"
             >
-              <img
-                src={currentUser?.avatar}
-                alt={currentUser?.name}
-                className="h-8 w-8 rounded-full object-cover"
-              />
+              <div className="relative h-8 w-8 rounded-full overflow-hidden">
+                <Image
+                  src={currentUser?.avatar || ''}
+                  alt={currentUser?.name || 'User'}
+                  width={32}
+                  height={32}
+                  className="object-cover"
+                />
+              </div>
               <span className="hidden text-sm font-medium text-neutral-700 dark:text-neutral-300 sm:block">
                 {currentUser?.name}
               </span>

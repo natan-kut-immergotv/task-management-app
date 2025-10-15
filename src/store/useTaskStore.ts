@@ -131,7 +131,7 @@ const defaultTasks: Task[] = [
 
 export const useTaskStore = create<TaskState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tasks: defaultTasks,
       users: defaultUsers,
       currentUser: defaultUsers[0],

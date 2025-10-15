@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Calendar, User, Tag } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useTaskStore } from '../store/useTaskStore'
 
 interface AddTaskModalProps {

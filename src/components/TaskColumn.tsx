@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import { Plus, Circle } from 'lucide-react'
 import { Task } from '../types/task'
 import SortableTaskCard from './SortableTaskCard'
-import { useTaskStore } from '../store/useTaskStore'
 
 interface TaskColumnProps {
   status: Task['status']
@@ -35,13 +34,6 @@ export default function TaskColumn({ status, title, tasks, onAddTask, onEditTask
     id: status,
   })
 
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event
-    
-    if (active && over && active.id !== over.id) {
-      moveTask(active.id, status)
-    }
-  }
 
   return (
     <motion.div
