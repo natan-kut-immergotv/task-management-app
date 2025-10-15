@@ -1,103 +1,170 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useState, useEffect } from 'react'
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCorners } from '@dnd-kit/core'
+import { motion } from 'framer-motion'
+import { useTaskStore } from '../store/useTaskStore'
+import Header from '../components/Header'
+import TaskColumn from '../components/TaskColumn'
+import TaskModal from '../components/TaskModal'
+import AddTaskModal from '../components/AddTaskModal'
+import { Task } from '../types/task'
+
+export default function HomePage() {
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
+  const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false)
+  const [addTaskStatus, setAddTaskStatus] = useState<Task['status']>('todo')
+  const [draggedTask, setDraggedTask] = useState<Task | null>(null)
+  
+  const { tasks, darkMode, toggleDarkMode } = useTaskStore()
+
+  // Apply dark mode to document
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [darkMode])
+
+  // Group tasks by status
+  const tasksByStatus = {
+    todo: tasks.filter(task => task.status === 'todo'),
+    'in-progress': tasks.filter(task => task.status === 'in-progress'),
+    done: tasks.filter(task => task.status === 'done'),
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const task = tasks.find(t => t.id === event.active.id)
+    setDraggedTask(task || null)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    
+    if (active && over && active.id !== over.id) {
+      const taskId = active.id as string
+      const newStatus = over.id as Task['status']
+      
+      // Update task status
+      useTaskStore.getState().moveTask(taskId, newStatus)
+    }
+    
+    setDraggedTask(null)
+  }
+
+  const handleTaskClick = (task: Task) => {
+    setSelectedTask(task)
+    setIsTaskModalOpen(true)
+  }
+
+  const handleAddTask = (status: Task['status'] = 'todo') => {
+    setAddTaskStatus(status)
+    setIsAddTaskModalOpen(true)
+  }
+
+  const columns = [
+    {
+      status: 'todo' as const,
+      title: 'To Do',
+      tasks: tasksByStatus.todo,
+    },
+    {
+      status: 'in-progress' as const,
+      title: 'In Progress',
+      tasks: tasksByStatus['in-progress'],
+    },
+    {
+      status: 'done' as const,
+      title: 'Done',
+      tasks: tasksByStatus.done,
+    },
+  ]
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+      <Header onAddTask={() => handleAddTask()} />
+      
+      <main className="mx-auto max-w-7xl px-6 py-8">
+        {/* Stats Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {columns.map((column) => (
+            <div
+              key={column.status}
+              className="rounded-lg border bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                    {column.title}
+                  </p>
+                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">
+                    {column.tasks.length}
+                  </p>
+                </div>
+                <div className="rounded-full bg-neutral-100 p-2 dark:bg-neutral-700">
+                  <div className="h-3 w-3 rounded-full bg-indigo-600"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        {/* Kanban Board */}
+        <DndContext
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {columns.map((column) => (
+              <TaskColumn
+                key={column.status}
+                status={column.status}
+                title={column.title}
+                tasks={column.tasks}
+                onAddTask={() => handleAddTask(column.status)}
+                onEditTask={handleTaskClick}
+              />
+            ))}
+          </div>
+
+          {/* Drag Overlay */}
+          <DragOverlay>
+            {draggedTask ? (
+              <div className="rounded-lg border bg-white p-4 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+                <h3 className="font-medium text-neutral-900 dark:text-white">
+                  {draggedTask.title}
+                </h3>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  {draggedTask.description}
+                </p>
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      {/* Modals */}
+      <TaskModal
+        task={selectedTask}
+        isOpen={isTaskModalOpen}
+        onClose={() => {
+          setIsTaskModalOpen(false)
+          setSelectedTask(null)
+        }}
+      />
+
+      <AddTaskModal
+        isOpen={isAddTaskModalOpen}
+        onClose={() => setIsAddTaskModalOpen(false)}
+        defaultStatus={addTaskStatus}
+      />
     </div>
-  );
+  )
 }
