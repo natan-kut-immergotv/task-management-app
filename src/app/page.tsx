@@ -106,18 +106,18 @@ export default function HomePage() {
           {columns.map((column) => (
             <div
               key={column.status}
-              className="rounded-lg border bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+              className="rounded-lg border bg-white p-4 border-neutral-200"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  <p className="text-sm font-medium text-neutral-600">
                     {column.title}
                   </p>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-2xl font-bold text-neutral-900">
                     {column.tasks.length}
                   </p>
                 </div>
-                <div className="rounded-full bg-neutral-100 p-2 dark:bg-neutral-700">
+                <div className="rounded-full bg-neutral-100 p-2">
                   <div className="h-3 w-3 rounded-full bg-indigo-600"></div>
                 </div>
               </div>
