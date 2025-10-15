@@ -17,26 +17,7 @@ export default function HomePage() {
   const [addTaskStatus, setAddTaskStatus] = useState<Task['status']>('todo')
   const [draggedTask, setDraggedTask] = useState<Task | null>(null)
   
-  const { tasks, darkMode } = useTaskStore()
-
-  // Initialize dark mode from localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('task-management-storage')
-    if (savedTheme) {
-      try {
-        const parsed = JSON.parse(savedTheme)
-        if (parsed.state && typeof parsed.state.darkMode === 'boolean') {
-          if (parsed.state.darkMode) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-          }
-        }
-      } catch (e) {
-        console.error('Error parsing theme:', e)
-      }
-    }
-  }, [])
+  const { tasks, darkMode, toggleDarkMode } = useTaskStore()
 
   // Apply dark mode to document
   useEffect(() => {
@@ -45,6 +26,11 @@ export default function HomePage() {
     } else {
       document.documentElement.classList.remove('dark')
     }
+  }, [darkMode])
+
+  // Debug - log dark mode state
+  useEffect(() => {
+    console.log('Dark mode:', darkMode)
   }, [darkMode])
 
   // Group tasks by status

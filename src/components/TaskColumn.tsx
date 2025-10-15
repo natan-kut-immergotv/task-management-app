@@ -32,7 +32,6 @@ export default function TaskColumn({ status, title, tasks, onAddTask, onEditTask
     id: status,
   })
 
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,29 +63,31 @@ export default function TaskColumn({ status, title, tasks, onAddTask, onEditTask
         </div>
       </div>
 
-      {/* Tasks Container */}
+      {/* Tasks Container - ref on outer div */}
       <div
         ref={setNodeRef}
-        className={`flex-1 space-y-3 rounded-lg p-3 transition-colors ${
+        className={`flex-1 rounded-lg p-3 transition-colors ${
           isOver ? 'bg-neutral-100 dark:bg-neutral-800' : 'bg-neutral-50 dark:bg-neutral-900'
         }`}
       >
         <SortableContext items={tasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
-          {tasks.length === 0 ? (
-            <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-600">
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                No tasks yet
-              </p>
-            </div>
-          ) : (
-            tasks.map((task) => (
-              <SortableTaskCard
-                key={task.id}
-                task={task}
-                onEdit={onEditTask}
-              />
-            ))
-          )}
+          <div className="space-y-3 min-h-32">
+            {tasks.length === 0 ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-600">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  No tasks yet
+                </p>
+              </div>
+            ) : (
+              tasks.map((task) => (
+                <SortableTaskCard
+                  key={task.id}
+                  task={task}
+                  onEdit={onEditTask}
+                />
+              ))
+            )}
+          </div>
         </SortableContext>
       </div>
     </motion.div>
