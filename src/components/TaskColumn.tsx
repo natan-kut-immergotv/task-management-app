@@ -28,8 +28,6 @@ const statusIcons = {
 }
 
 export default function TaskColumn({ status, title, tasks, onAddTask, onEditTask }: TaskColumnProps) {
-  const { moveTask } = useTaskStore()
-  
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   })
